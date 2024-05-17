@@ -9,6 +9,12 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct ans_proc {
+	char P_name[16];
+	int Pid; // process id
+	int P_pid; // parent process id
+	int P_state;
+};
 
 // bio.c
 void            binit(void);
@@ -121,6 +127,7 @@ int             wait(void);
 void            wakeup(void*);
 void            yield(void);
 int 			Sps(void);
+int 			ps(int, int, struct ans_proc*);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

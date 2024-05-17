@@ -1,5 +1,12 @@
 struct stat;
 struct rtcdate;
+// struct proc;
+struct ans_proc {
+	char P_name[16];
+	int Pid; // process id
+	int P_pid; // parent process id
+	int P_state;
+};
 
 // system calls
 int fork(void);
@@ -24,7 +31,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int Sps(void);
-
+int ps(int, int, struct ans_proc*);
 
 // ulib.c
 int stat(const char*, struct stat*);

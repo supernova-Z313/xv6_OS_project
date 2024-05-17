@@ -94,3 +94,15 @@ int sys_Sps(void)
 {
   return Sps();
 }
+
+int sys_ps(void)
+{
+  int a, b;
+  struct ans_proc process_info_t;
+
+  if(argint(0, &a) < 0 || argint(1, &b) < 0)
+    return -1;
+  argptr(2, (char **)&process_info_t, sizeof(process_info_t));
+
+  return ps(a, b, &process_info_t);
+}

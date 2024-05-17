@@ -20,6 +20,78 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+// ===============================================================================================
+char * my_strncpy(char *dest, const char *src, int n) {
+  int i;
+  for (i = 0; i < n && src[i] != '\0'; i++)
+    dest[i] = src[i];
+  for ( ; i < n; i++)
+    dest[i] = '\0';
+  return dest;
+}
+// --------------------------------------------
+int my_abs(int a){
+  if(a < 0) return -a;
+  return a;
+}
+// --------------------------------------------
+int ps(int state_t, int pid_t, struct ans_proc *process_info_t)
+{
+  // enable interrupts
+  sti();
+  acquire(&ptable.lock);
+
+  struct proc *near_temp = ptable.proc;
+
+  int min_space = 999999;
+  for(struct proc *C_proc = ptable.proc; C_proc < &ptable.proc[NPROC]; C_proc++)
+  {
+    if(state_t == 1 && C_proc->state == SLEEPING)
+    {
+      if(pid_t == C_proc->pid){
+        cprintf("  %d  | %s\t | %d\t | %d \n", C_proc->pid, C_proc->name, C_proc->parent->pid, C_proc->state);
+        release(&ptable.lock);
+        return 23;
+      } else {
+        if(min_space > my_abs(C_proc->pid - pid_t)){
+          min_space = my_abs(C_proc->pid - pid_t);
+          near_temp = C_proc;
+        }
+      }
+    } else if(state_t == 2 && C_proc->state == RUNNING)
+    {
+      if(pid_t == C_proc->pid){
+        cprintf("  %d  | %s\t | %d\t | %d \n", C_proc->pid, C_proc->name, C_proc->parent->pid, C_proc->state);
+        release(&ptable.lock);
+        return 23;
+      } else {
+        if(min_space > my_abs(C_proc->pid - pid_t)){
+          min_space = my_abs(C_proc->pid - pid_t);
+          near_temp = C_proc;
+        }
+      }
+    } else if(state_t == 3 && C_proc->state == RUNNABLE)
+    {
+      if(pid_t == C_proc->pid){
+        cprintf("  %d  | %s\t | %d\t | %d \n", C_proc->pid, C_proc->name, C_proc->parent->pid, C_proc->state);
+        release(&ptable.lock);
+        return 23;
+      } else {
+        if(min_space > my_abs(C_proc->pid - pid_t)){
+          min_space = my_abs(C_proc->pid - pid_t);
+          near_temp = C_proc;
+        }
+      }
+    }
+  }
+
+  cprintf("  %d  | %s\t | %d\t | %d \n", near_temp->pid, near_temp->name, near_temp->parent->pid, near_temp->state);
+
+  release(&ptable.lock);
+  return 23;
+}
+
+// ===============================================================================================
 int Sps(void)
 {
   // enable interrupts
@@ -39,6 +111,8 @@ int Sps(void)
   release(&ptable.lock);
   return 22;
 }
+
+// ===============================================================================================
 
 void
 pinit(void)
