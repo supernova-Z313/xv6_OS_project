@@ -20,6 +20,26 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+int Sps(void)
+{
+  // enable interrupts
+  sti();
+  acquire(&ptable.lock);
+  cprintf("  P_id \t | P_Name \t | P_State \t \n");
+  for(struct proc *C_proc = ptable.proc; C_proc < &ptable.proc[NPROC]; C_proc++)
+  {
+    if(C_proc->state == SLEEPING){
+      cprintf("  %d \t | %s   \t | SLEEPING \n", C_proc->pid, C_proc->name);      
+    } else if(C_proc->state == RUNNING) {
+      cprintf("  %d \t | %s \t | RUNNING \n", C_proc->pid, C_proc->name);
+    } else if(C_proc->state == RUNNABLE){
+      cprintf("  %d \t | %s \t | RUNNABLE \n", C_proc->pid, C_proc->name);
+    }
+  }
+  release(&ptable.lock);
+  return 22;
+}
+
 void
 pinit(void)
 {
